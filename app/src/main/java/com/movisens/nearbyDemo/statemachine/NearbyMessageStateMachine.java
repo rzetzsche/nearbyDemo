@@ -129,12 +129,14 @@ public class NearbyMessageStateMachine implements GoogleApiClient.ConnectionCall
 
     }
 
+    //Could be used, if device should only search in foreground
     public void connect() {
         if (!googleApiClient.isConnected()) {
             googleApiClient.connect();
         }
     }
 
+    //Could be used, if device should only search in foreground
     public void disconnect() {
         states[currentState].disconnect();
         if (googleApiClient.isConnected()) {
