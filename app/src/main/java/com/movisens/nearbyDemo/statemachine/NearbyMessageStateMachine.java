@@ -20,25 +20,25 @@ import com.movisens.nearbyDemo.NearbyResultCallback;
  */
 public class NearbyMessageStateMachine implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    private GoogleApiClient mGoogleApiClient;
+
     //                          0                   1                       2
     private AbstractState[] states = {new StartState(), new BroadcastState(), new EndState()};
     private int indexState;
     private int currentState;
     private MessageListener deviceMessageListener;
-    private Message mDeviceMessage;
-    private Context context;
+    private Message deviceMessage;
     private DeviceUiCallbackInterface deviceUiCallback;
+    private GoogleApiClient googleApiClient;
 
     public NearbyMessageStateMachine(Context context, final DeviceUiCallbackInterface deviceUiCallback) {
-        this.context = context;
-        mGoogleApiClient = new GoogleApiClient.Builder(context)
+        this.deviceUiCallback = deviceUiCallback;
+        googleApiClient = new GoogleApiClient.Builder(context)
                 .addApi(Nearby.MESSAGES_API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
 
-        mDeviceMessage = DeviceMessage.newNearbyMessage(InstanceID.getInstance(context).getId());
+        deviceMessage = DeviceMessage.newNearbyMessage(InstanceID.getInstance(context).getId());
         deviceMessageListener = new MessageListener() {
             @Override
             public void onFound(Message message) {
@@ -101,15 +101,15 @@ public class NearbyMessageStateMachine implements GoogleApiClient.ConnectionCall
         @Override
         public void disconnect() {
             super.disconnect();
-            Nearby.Messages.unpublish(mGoogleApiClient, mDeviceMessage).setResultCallback(new NearbyResultCallback((MainActivity) deviceUiCallback));
-            Nearby.Messages.unsubscribe(mGoogleApiClient, deviceMessageListener).setResultCallback(new NearbyResultCallback((MainActivity) deviceUiCallback));
+            Nearby.Messages.unpublish(googleApiClient, deviceMessage).setResultCallback(new NearbyResultCallback((MainActivity) deviceUiCallback));
+            Nearby.Messages.unsubscribe(googleApiClient, deviceMessageListener).setResultCallback(new NearbyResultCallback((MainActivity) deviceUiCallback));
         }
 
         @Override
         public void connect() {
             super.connect();
-            Nearby.Messages.publish(mGoogleApiClient, mDeviceMessage).setResultCallback(new NearbyResultCallback((MainActivity) deviceUiCallback));
-            Nearby.Messages.subscribe(mGoogleApiClient, deviceMessageListener).setResultCallback(new NearbyResultCallback((MainActivity) deviceUiCallback));
+            Nearby.Messages.publish(googleApiClient, deviceMessage).setResultCallback(new NearbyResultCallback((MainActivity) deviceUiCallback));
+            Nearby.Messages.subscribe(googleApiClient, deviceMessageListener).setResultCallback(new NearbyResultCallback((MainActivity) deviceUiCallback));
         }
     }
 
@@ -129,16 +129,18 @@ public class NearbyMessageStateMachine implements GoogleApiClient.ConnectionCall
 
     }
 
+    //Could be used, if device should only search in foreground
     public void connect() {
-        if (!mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.connect();
+        if (!googleApiClient.isConnected()) {
+            googleApiClient.connect();
         }
     }
 
+    //Could be used, if device should only search in foreground
     public void disconnect() {
         states[currentState].disconnect();
-        if (mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
+        if (googleApiClient.isConnected()) {
+            googleApiClient.disconnect();
         }
     }
 

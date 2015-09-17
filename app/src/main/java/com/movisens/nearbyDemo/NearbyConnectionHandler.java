@@ -27,7 +27,7 @@ public class NearbyConnectionHandler implements GoogleApiClient.ConnectionCallba
         Connections.MessageListener,
         Connections.EndpointDiscoveryListener {
 
-    private GoogleApiClient mGoogleApiClient;
+    private GoogleApiClient googleApiClient;
     private Context context;
     private DeviceUiCallbackInterface deviceUiCallback;
     protected static int[] NETWORK_TYPES = {ConnectivityManager.TYPE_WIFI,
@@ -37,21 +37,20 @@ public class NearbyConnectionHandler implements GoogleApiClient.ConnectionCallba
     public NearbyConnectionHandler(Context context, DeviceUiCallbackInterface deviceUiCallback) {
         this.context = context;
         this.deviceUiCallback = deviceUiCallback;
-        mGoogleApiClient = new GoogleApiClient.Builder(context)
+        googleApiClient = new GoogleApiClient.Builder(context)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Nearby.CONNECTIONS_API)
                 .build();
-        mGoogleApiClient.connect();
+        googleApiClient.connect();
     }
 
     @Override
     public void onConnected(Bundle bundle) {
         if (isConnectedToNetwork()) {
-            startAdvertising();
-            startDiscovery();
+            startHandler();
         } else {
-
+            Log.e(NearbyConnectionHandler.class.getSimpleName(), "Device not connected to wlan");
         }
     }
 
@@ -73,22 +72,22 @@ public class NearbyConnectionHandler implements GoogleApiClient.ConnectionCallba
 
     @Override
     public void onEndpointLost(String s) {
-
+        //not used for our purpose
     }
 
     @Override
     public void onMessageReceived(String s, byte[] bytes, boolean b) {
-
+        //not used for our purpose
     }
 
     @Override
     public void onDisconnected(String s) {
-
+        //not used for our purpose
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-
+        //not used for our purpose
     }
 
     private boolean isConnectedToNetwork() {
@@ -104,7 +103,7 @@ public class NearbyConnectionHandler implements GoogleApiClient.ConnectionCallba
     }
 
     private void stopDiscovery() {
-        Nearby.Connections.stopDiscovery(mGoogleApiClient, context.getString(R.string.service_id));
+        Nearby.Connections.stopDiscovery(googleApiClient, context.getString(R.string.service_id));
     }
 
     private void startDiscovery() {
@@ -112,7 +111,7 @@ public class NearbyConnectionHandler implements GoogleApiClient.ConnectionCallba
 
         long DISCOVER_TIMEOUT = 0L;
 
-        Nearby.Connections.startDiscovery(mGoogleApiClient, serviceId, DISCOVER_TIMEOUT, this)
+        Nearby.Connections.startDiscovery(googleApiClient, serviceId, DISCOVER_TIMEOUT, this)
                 .setResultCallback(new ResultCallback<Status>() {
                                        @Override
                                        public void onResult(Status status) {
@@ -128,7 +127,7 @@ public class NearbyConnectionHandler implements GoogleApiClient.ConnectionCallba
     }
 
     private void stopAdvertising() {
-        Nearby.Connections.stopAdvertising(mGoogleApiClient);
+        Nearby.Connections.stopAdvertising(googleApiClient);
     }
 
     private void startAdvertising() {
@@ -138,7 +137,7 @@ public class NearbyConnectionHandler implements GoogleApiClient.ConnectionCallba
 
         long NO_TIMEOUT = 0L;
 
-        Nearby.Connections.startAdvertising(mGoogleApiClient, null, appMetadata, NO_TIMEOUT,
+        Nearby.Connections.startAdvertising(googleApiClient, null, appMetadata, NO_TIMEOUT,
                 this).setResultCallback(new ResultCallback<Connections.StartAdvertisingResult>() {
             @Override
             public void onResult(Connections.StartAdvertisingResult result) {

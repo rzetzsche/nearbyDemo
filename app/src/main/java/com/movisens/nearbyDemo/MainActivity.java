@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements DeviceUiCallbackI
                 if (isChecked) {
                     nearbyConnectionHandler = new NearbyConnectionHandler(MainActivity.this, MainActivity.this);
                 } else {
-                    nearbyConnectionHandler.stopStateMachine();
+                    nearbyConnectionHandler.stopHandler();
                     nearbyConnectionHandler = null;
                 }
             }

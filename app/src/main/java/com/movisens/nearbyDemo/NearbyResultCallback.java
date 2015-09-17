@@ -15,6 +15,7 @@ public class NearbyResultCallback implements ResultCallback<Status> {
 
     private static final int REQUEST_RESOLVE_ERROR = 1;
     private Activity activity;
+    private static String TAG = NearbyResultCallback.class.getSimpleName();
 
     public NearbyResultCallback(Activity activity) {
         this.activity = activity;
@@ -23,7 +24,7 @@ public class NearbyResultCallback implements ResultCallback<Status> {
     @Override
     public void onResult(@NonNull Status status) {
         if (status.isSuccess()) {
-            Log.i("NearbyResultCallback", status + "");
+            Log.i(TAG, status + "");
         } else {
             // Currently, the only resolvable error is that the device is not opted
             // in to Nearby. Starting the resolution displays an opt-in dialog.
@@ -32,13 +33,13 @@ public class NearbyResultCallback implements ResultCallback<Status> {
                     status.startResolutionForResult(activity,
                             REQUEST_RESOLVE_ERROR);
                 } catch (IntentSender.SendIntentException e) {
-                    Log.i("NearbyResultCallback", e.toString());
+                    Log.e(TAG, e.toString());
                 }
             } else {
                 // This will be encountered on initial startup because we do
                 // both publish and subscribe together.  So having a toast while
                 // resolving dialog is in progress is confusing, so just log it.
-                Log.i("NearbyResultCallback", status + "");
+                Log.e(TAG, status + "");
             }
         }
     }
