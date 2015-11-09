@@ -20,6 +20,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.messages.NearbyMessagesStatusCodes;
 import com.movisens.nearbyDemo.handler.NearbyConnectionsHandler;
+import com.movisens.nearbyDemo.handler.NearbyHandler;
 import com.movisens.nearbyDemo.handler.NearbyMessagesHandler;
 import com.movisens.nearbyDemo.model.DeviceMessage;
 
@@ -36,8 +37,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Bind(R.id.card_layout)
     LinearLayout linearLayout;
 
-    private NearbyMessagesHandler nearbyMessagesHandler;
-    private NearbyConnectionsHandler nearbyConnectionsHandler;
+    private NearbyHandler nearbyMessagesHandler;
+    private NearbyHandler nearbyConnectionsHandler;
     private GoogleApiClient googleApiClient;
 
     public static final int REQUEST_NEARBY_PERMISSIONS = 1;

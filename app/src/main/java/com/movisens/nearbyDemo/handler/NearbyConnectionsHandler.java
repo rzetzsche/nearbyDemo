@@ -10,9 +10,9 @@ import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.connection.AppIdentifier;
 import com.google.android.gms.nearby.connection.AppMetadata;
 import com.google.android.gms.nearby.connection.Connections;
-import com.movisens.nearbyDemo.model.DeviceMessage;
 import com.movisens.nearbyDemo.R;
 import com.movisens.nearbyDemo.UpdateViewCallback;
+import com.movisens.nearbyDemo.model.DeviceMessage;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -131,14 +131,17 @@ public class NearbyConnectionsHandler implements
         startDiscovery();
     }
 
+    @Override
     public void setUpdateViewListener(UpdateViewCallback deviceUiCallback) {
         this.deviceUiCallback = deviceUiCallback;
     }
 
+    @Override
     public Collection<DeviceMessage> getDeviceMessages() {
         return deviceMessages.values();
     }
 
+    @Override
     public void removeUpdateViewListener() {
         this.deviceUiCallback = null;
     }

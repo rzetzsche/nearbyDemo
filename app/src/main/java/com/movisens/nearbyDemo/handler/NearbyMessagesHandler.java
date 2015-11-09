@@ -73,14 +73,17 @@ public class NearbyMessagesHandler implements NearbyHandler {
         Nearby.Messages.publish(googleApiClient, deviceMessage);
     }
 
+    @Override
     public void setUpdateViewListener(UpdateViewCallback deviceUiCallback) {
         this.deviceUiCallback = deviceUiCallback;
     }
 
+    @Override
     public Set<DeviceMessage> getDeviceMessages() {
         return deviceMessages;
     }
 
+    @Override
     public void removeUpdateViewListener() {
         this.deviceUiCallback = null;
     }
