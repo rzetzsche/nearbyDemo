@@ -1,5 +1,5 @@
 <fragment xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/mainFragment"
-    class="com.movisens.nearbyDemo.MainFragment"
+    class="com.movisens.nearbyDemo.ui.MainFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent" />

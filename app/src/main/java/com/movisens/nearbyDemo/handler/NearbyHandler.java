@@ -1,6 +1,6 @@
 package com.movisens.nearbyDemo.handler;
 
-import com.movisens.nearbyDemo.UpdateViewCallback;
+import com.movisens.nearbyDemo.ui.UpdateViewCallback;
 import com.movisens.nearbyDemo.model.DeviceMessage;
 
 import java.util.Collection;

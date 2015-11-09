@@ -7,7 +7,7 @@ import com.google.android.gms.iid.InstanceID;
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.messages.Message;
 import com.google.android.gms.nearby.messages.MessageListener;
-import com.movisens.nearbyDemo.UpdateViewCallback;
+import com.movisens.nearbyDemo.ui.UpdateViewCallback;
 import com.movisens.nearbyDemo.model.DeviceMessage;
 
 import java.util.HashSet;

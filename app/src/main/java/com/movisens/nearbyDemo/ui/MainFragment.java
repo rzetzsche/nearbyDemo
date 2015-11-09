@@ -1,4 +1,4 @@
-package com.movisens.nearbyDemo;
+package com.movisens.nearbyDemo.ui;
 
 import android.content.Intent;
 import android.content.IntentSender;
@@ -21,6 +21,7 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.messages.NearbyMessagesStatusCodes;
+import com.movisens.nearbyDemo.R;
 import com.movisens.nearbyDemo.handler.NearbyConnectionsHandler;
 import com.movisens.nearbyDemo.handler.NearbyHandler;
 import com.movisens.nearbyDemo.handler.NearbyMessagesHandler;
