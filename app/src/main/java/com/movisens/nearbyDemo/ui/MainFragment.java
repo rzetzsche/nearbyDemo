@@ -128,8 +128,10 @@ public class MainFragment extends Fragment implements GoogleApiClient.Connection
                 deviceMessages) {
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
             CardView cardView = (CardView) layoutInflater.inflate(R.layout.cardview_layout, null);
-            TextView cardViewTextView = (TextView) cardView.findViewById(R.id.info_text);
-            cardViewTextView.setText(deviceMessage.getModelType());
+            TextView cardViewDeviceName = (TextView) cardView.findViewById(R.id.device_name);
+            cardViewDeviceName.setText(deviceMessage.getModelType());
+            TextView cardViewDeviceId = (TextView) cardView.findViewById(R.id.device_id);
+            cardViewDeviceId.setText(deviceMessage.getInstanceId());
             linearLayout.addView(cardView);
         }
     }
