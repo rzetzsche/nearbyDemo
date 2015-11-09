@@ -43,7 +43,7 @@ public class NearbyConnectionsHandler implements
 
     @Override
     public void onConnectionRequest(String s, String s1, String s2, byte[] bytes) {
-
+        //not used for our purpose
     }
 
     @Override

@@ -7,11 +7,8 @@ import com.google.android.gms.iid.InstanceID;
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.messages.Message;
 import com.google.android.gms.nearby.messages.MessageListener;
-import com.google.android.gms.nearby.messages.PublishOptions;
-import com.google.android.gms.nearby.messages.Strategy;
-import com.google.android.gms.nearby.messages.SubscribeOptions;
-import com.movisens.nearbyDemo.model.DeviceMessage;
 import com.movisens.nearbyDemo.UpdateViewCallback;
+import com.movisens.nearbyDemo.model.DeviceMessage;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -35,7 +32,7 @@ public class NearbyMessagesHandler implements NearbyHandler {
             @Override
             public void onFound(Message message) {
                 try {
-                    final DeviceMessage deviceMessage = DeviceMessage.fromNearbyMessage(message);
+                    DeviceMessage deviceMessage = DeviceMessage.fromNearbyMessage(message);
                     deviceMessages.add(deviceMessage);
                     deviceUiCallback.updateView();
                 } catch (Exception e) {
@@ -69,23 +66,11 @@ public class NearbyMessagesHandler implements NearbyHandler {
     }
 
     private void startDiscovery() {
-        Nearby.Messages.subscribe(googleApiClient, deviceMessageListener, new SubscribeOptions.Builder()
-                .setStrategy(new Strategy.Builder()
-                        .setDiscoveryMode(Strategy.DISCOVERY_MODE_SCAN)
-                        .setDistanceType(Strategy.DISTANCE_TYPE_EARSHOT)
-                        .setTtlSeconds(Strategy.TTL_SECONDS_MAX)
-                        .build())
-                .build());
+        Nearby.Messages.subscribe(googleApiClient, deviceMessageListener);
     }
 
     private void startAdvertising() {
-        Nearby.Messages.publish(googleApiClient, deviceMessage, new PublishOptions.Builder()
-                .setStrategy(new Strategy.Builder()
-                        .setDiscoveryMode(Strategy.DISCOVERY_MODE_BROADCAST)
-                        .setDistanceType(Strategy.DISTANCE_TYPE_EARSHOT)
-                        .setTtlSeconds(Strategy.TTL_SECONDS_MAX)
-                        .build())
-                .build());
+        Nearby.Messages.publish(googleApiClient, deviceMessage);
     }
 
     public void setUpdateViewListener(UpdateViewCallback deviceUiCallback) {
