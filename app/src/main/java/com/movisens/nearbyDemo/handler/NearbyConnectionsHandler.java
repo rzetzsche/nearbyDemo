@@ -33,6 +33,7 @@ public class NearbyConnectionsHandler implements
     private Map<String, DeviceMessage> deviceMessages;
     private Context context;
     private static String TAG = NearbyConnectionsHandler.class.getSimpleName();
+    private boolean isStarted;
 
 
     public NearbyConnectionsHandler(GoogleApiClient googleApiClient) {
@@ -119,16 +120,26 @@ public class NearbyConnectionsHandler implements
 
     @Override
     public void stopHandler() {
-        stopAdvertising();
-        stopDiscovery();
-        deviceMessages.clear();
-        deviceUiCallback.updateView();
+        if (isStarted) {
+            isStarted = false;
+            stopAdvertising();
+            stopDiscovery();
+            deviceMessages.clear();
+            deviceUiCallback.updateView();
+        } else {
+            Log.e(TAG, "Handler was already stoped!");
+        }
     }
 
     @Override
     public void startHandler() {
-        startAdvertising();
-        startDiscovery();
+        if (!isStarted) {
+            isStarted = true;
+            startAdvertising();
+            startDiscovery();
+        } else {
+            Log.e(TAG, "Handler was already started!");
+        }
     }
 
     @Override
@@ -145,4 +156,5 @@ public class NearbyConnectionsHandler implements
     public void removeUpdateViewListener() {
         this.deviceUiCallback = null;
     }
+
 }

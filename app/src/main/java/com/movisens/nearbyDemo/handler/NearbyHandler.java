@@ -18,4 +18,5 @@ public interface NearbyHandler {
     void setUpdateViewListener(UpdateViewCallback deviceUiCallback);
 
     void removeUpdateViewListener();
+
 }

@@ -1,29 +1,5 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainFragment"
+    class="com.movisens.nearbyDemo.MainFragment"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".MainActivity">
-
-    <android.support.v7.widget.SwitchCompat
-        android:id="@+id/nearbyMessages"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Search for Nearby Devices (Nearby Messages)" />
-
-    <android.support.v7.widget.SwitchCompat
-        android:id="@+id/nearbyConnections"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Search for Nearby Devices (Nearby Connections)" />
-
-    <LinearLayout
-        android:id="@+id/card_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" />
-</LinearLayout>
+    android:layout_height="match_parent" />

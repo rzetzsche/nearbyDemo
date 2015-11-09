@@ -23,6 +23,7 @@ public class NearbyMessagesHandler implements NearbyHandler {
     private MessageListener deviceMessageListener;
     private UpdateViewCallback deviceUiCallback;
     private Set<DeviceMessage> deviceMessages;
+    private boolean isStarted;
 
     public NearbyMessagesHandler(GoogleApiClient googleApiClient) {
         this.googleApiClient = googleApiClient;
@@ -45,10 +46,26 @@ public class NearbyMessagesHandler implements NearbyHandler {
 
     @Override
     public void stopHandler() {
-        stopAdvertising();
-        stopDiscovery();
-        deviceMessages.clear();
-        deviceUiCallback.updateView();
+        if (isStarted) {
+            isStarted = false;
+            stopAdvertising();
+            stopDiscovery();
+            deviceMessages.clear();
+            deviceUiCallback.updateView();
+        } else {
+            Log.e(TAG, "Handler was already stoped!");
+        }
+    }
+
+    @Override
+    public void startHandler() {
+        if (!isStarted) {
+            isStarted = true;
+            startAdvertising();
+            startDiscovery();
+        } else {
+            Log.e(TAG, "Handler was already started!");
+        }
     }
 
     private void stopDiscovery() {
@@ -57,12 +74,6 @@ public class NearbyMessagesHandler implements NearbyHandler {
 
     private void stopAdvertising() {
         Nearby.Messages.unpublish(googleApiClient, deviceMessage);
-    }
-
-    @Override
-    public void startHandler() {
-        startAdvertising();
-        startDiscovery();
     }
 
     private void startDiscovery() {
@@ -87,4 +98,5 @@ public class NearbyMessagesHandler implements NearbyHandler {
     public void removeUpdateViewListener() {
         this.deviceUiCallback = null;
     }
+
 }
