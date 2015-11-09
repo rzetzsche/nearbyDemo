@@ -1,12 +1,8 @@
-package com.movisens.nearbyDemo;
+package com.movisens.nearbyDemo.handler;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.Bundle;
 import android.util.Log;
 
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
@@ -14,49 +10,35 @@ import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.connection.AppIdentifier;
 import com.google.android.gms.nearby.connection.AppMetadata;
 import com.google.android.gms.nearby.connection.Connections;
+import com.movisens.nearbyDemo.model.DeviceMessage;
+import com.movisens.nearbyDemo.R;
+import com.movisens.nearbyDemo.UpdateViewCallback;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by rzetzsche on 10.09.2015.
  */
-public class NearbyConnectionHandler implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,
+public class NearbyConnectionsHandler implements
         Connections.ConnectionRequestListener,
         Connections.MessageListener,
-        Connections.EndpointDiscoveryListener {
+        Connections.EndpointDiscoveryListener, NearbyHandler {
 
     private GoogleApiClient googleApiClient;
+    private UpdateViewCallback deviceUiCallback;
+    private Map<String, DeviceMessage> deviceMessages;
     private Context context;
-    private DeviceUiCallbackInterface deviceUiCallback;
-    protected static int[] NETWORK_TYPES = {ConnectivityManager.TYPE_WIFI,
-            ConnectivityManager.TYPE_ETHERNET};
+    private static String TAG = NearbyConnectionsHandler.class.getSimpleName();
 
 
-    public NearbyConnectionHandler(Context context, DeviceUiCallbackInterface deviceUiCallback) {
-        this.context = context;
-        this.deviceUiCallback = deviceUiCallback;
-        googleApiClient = new GoogleApiClient.Builder(context)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(Nearby.CONNECTIONS_API)
-                .build();
-        googleApiClient.connect();
-    }
-
-    @Override
-    public void onConnected(Bundle bundle) {
-        if (isConnectedToNetwork()) {
-            startHandler();
-        } else {
-            Log.e(NearbyConnectionHandler.class.getSimpleName(), "Device not connected to wlan");
-        }
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
+    public NearbyConnectionsHandler(GoogleApiClient googleApiClient) {
+        this.googleApiClient = googleApiClient;
+        this.context = googleApiClient.getContext();
+        this.deviceMessages = new HashMap<>();
     }
 
     @Override
@@ -67,12 +49,14 @@ public class NearbyConnectionHandler implements GoogleApiClient.ConnectionCallba
     @Override
     public void onEndpointFound(final String endpointId, String deviceId,
                                 String serviceId, final String endpointName) {
-        deviceUiCallback.addDevice(new DeviceMessage(deviceId, endpointName));
+        deviceMessages.put(endpointId, new DeviceMessage(deviceId, endpointName));
+        deviceUiCallback.updateView();
     }
 
     @Override
-    public void onEndpointLost(String s) {
-        //not used for our purpose
+    public void onEndpointLost(String endpointId) {
+        deviceMessages.remove(endpointId);
+        deviceUiCallback.updateView();
     }
 
     @Override
@@ -83,23 +67,6 @@ public class NearbyConnectionHandler implements GoogleApiClient.ConnectionCallba
     @Override
     public void onDisconnected(String s) {
         //not used for our purpose
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        //not used for our purpose
-    }
-
-    private boolean isConnectedToNetwork() {
-        ConnectivityManager connManager =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        for (int networkType : NETWORK_TYPES) {
-            NetworkInfo info = connManager.getNetworkInfo(networkType);
-            if (info != null && info.isConnectedOrConnecting()) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private void stopDiscovery() {
@@ -116,9 +83,9 @@ public class NearbyConnectionHandler implements GoogleApiClient.ConnectionCallba
                                        @Override
                                        public void onResult(Status status) {
                                            if (status.getStatus().isSuccess()) {
-                                               Log.d(getClass().getSimpleName(), status.getStatus() + "");
+                                               Log.d(TAG, status.getStatus() + "");
                                            } else {
-                                               Log.e(getClass().getSimpleName(), status.getStatus() + "");
+                                               Log.e(TAG, status.getStatus() + "");
                                            }
                                        }
                                    }
@@ -142,21 +109,37 @@ public class NearbyConnectionHandler implements GoogleApiClient.ConnectionCallba
             @Override
             public void onResult(Connections.StartAdvertisingResult result) {
                 if (result.getStatus().isSuccess()) {
-                    Log.d(getClass().getSimpleName(), result.getStatus() + "");
+                    Log.d(TAG, result.getStatus() + "");
                 } else {
-                    Log.e(getClass().getSimpleName(), result.getStatus() + "");
+                    Log.e(TAG, result.getStatus() + "");
                 }
             }
         });
     }
 
+    @Override
     public void stopHandler() {
         stopAdvertising();
         stopDiscovery();
+        deviceMessages.clear();
+        deviceUiCallback.updateView();
     }
 
+    @Override
     public void startHandler() {
         startAdvertising();
         startDiscovery();
+    }
+
+    public void setUpdateViewListener(UpdateViewCallback deviceUiCallback) {
+        this.deviceUiCallback = deviceUiCallback;
+    }
+
+    public Collection<DeviceMessage> getDeviceMessages() {
+        return deviceMessages.values();
+    }
+
+    public void removeUpdateViewListener() {
+        this.deviceUiCallback = null;
     }
 }

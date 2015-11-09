@@ -1,4 +1,4 @@
-package com.movisens.nearbyDemo;
+package com.movisens.nearbyDemo.model;
 
 import android.os.Build;
 

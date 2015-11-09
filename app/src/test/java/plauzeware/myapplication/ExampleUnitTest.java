@@ -1,4 +1,4 @@
-package plauzeware.myapplication;
+package plauzeware.nearbyDemo;
 
 import org.junit.Test;
 

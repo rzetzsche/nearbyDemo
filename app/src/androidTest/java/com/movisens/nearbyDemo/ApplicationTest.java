@@ -1,4 +1,4 @@
-package plauzeware.myapplication;
+package com.movisens.nearbyDemo;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
