@@ -11,8 +11,8 @@ import com.google.android.gms.nearby.connection.AppIdentifier;
 import com.google.android.gms.nearby.connection.AppMetadata;
 import com.google.android.gms.nearby.connection.Connections;
 import com.movisens.nearbyDemo.R;
-import com.movisens.nearbyDemo.ui.UpdateViewCallback;
 import com.movisens.nearbyDemo.model.DeviceMessage;
+import com.movisens.nearbyDemo.ui.UpdateViewCallback;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,7 +25,6 @@ import java.util.Map;
  */
 public class NearbyConnectionsHandler implements
         Connections.ConnectionRequestListener,
-        Connections.MessageListener,
         Connections.EndpointDiscoveryListener, NearbyHandler {
 
     private GoogleApiClient googleApiClient;
@@ -60,16 +59,6 @@ public class NearbyConnectionsHandler implements
         deviceUiCallback.updateView();
     }
 
-    @Override
-    public void onMessageReceived(String s, byte[] bytes, boolean b) {
-        //not used for our purpose
-    }
-
-    @Override
-    public void onDisconnected(String s) {
-        //not used for our purpose
-    }
-
     private void stopDiscovery() {
         Nearby.Connections.stopDiscovery(googleApiClient, context.getString(R.string.service_id));
     }
@@ -77,9 +66,7 @@ public class NearbyConnectionsHandler implements
     private void startDiscovery() {
         String serviceId = context.getString(R.string.service_id);
 
-        long DISCOVER_TIMEOUT = 0L;
-
-        Nearby.Connections.startDiscovery(googleApiClient, serviceId, DISCOVER_TIMEOUT, this)
+        Nearby.Connections.startDiscovery(googleApiClient, serviceId, Connections.DURATION_INDEFINITE, this)
                 .setResultCallback(new ResultCallback<Status>() {
                                        @Override
                                        public void onResult(Status status) {
@@ -94,6 +81,7 @@ public class NearbyConnectionsHandler implements
                 );
     }
 
+
     private void stopAdvertising() {
         Nearby.Connections.stopAdvertising(googleApiClient);
     }
@@ -103,19 +91,17 @@ public class NearbyConnectionsHandler implements
         appIdentifierList.add(new AppIdentifier(context.getString(R.string.service_id)));
         AppMetadata appMetadata = new AppMetadata(appIdentifierList);
 
-        long NO_TIMEOUT = 0L;
-
-        Nearby.Connections.startAdvertising(googleApiClient, null, appMetadata, NO_TIMEOUT,
-                this).setResultCallback(new ResultCallback<Connections.StartAdvertisingResult>() {
-            @Override
-            public void onResult(Connections.StartAdvertisingResult result) {
-                if (result.getStatus().isSuccess()) {
-                    Log.d(TAG, result.getStatus() + "");
-                } else {
-                    Log.e(TAG, result.getStatus() + "");
-                }
-            }
-        });
+        Nearby.Connections.startAdvertising(googleApiClient, null, appMetadata, Connections.DURATION_INDEFINITE, this)
+                .setResultCallback(new ResultCallback<Connections.StartAdvertisingResult>() {
+                    @Override
+                    public void onResult(Connections.StartAdvertisingResult result) {
+                        if (result.getStatus().isSuccess()) {
+                            Log.d(TAG, result.getStatus() + "");
+                        } else {
+                            Log.e(TAG, result.getStatus() + "");
+                        }
+                    }
+                });
     }
 
     @Override
